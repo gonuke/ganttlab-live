@@ -154,7 +154,7 @@ export default {
         // initializing task start and due date
         var startDate = null
         var dueDate = null
-        var duration = null  
+        var duration = null
 
         // reading lines from this task body to search for ganttStartString and ganttDueString
         if (task.body != null) {
@@ -175,7 +175,7 @@ export default {
             // this task body line starts with the ganttDurationString
             if (!lines[j].indexOf(this.ganttDurationString)) {
               // this task duration
-              duration = int(lines[j].replace(this.ganttDurationString, ''))
+              duration = parseInt(lines[j].replace(this.ganttDurationString, ''))
             }
           }
         }
@@ -194,10 +194,11 @@ export default {
             // the due date is calculated to the day after the task creation date
             dueDate.setDate(dueDate.getDate() + 1)
           } else {
+            dueDate = new Date(task.created_at)
             dueDate.setDate(startDate.getDate() + duration)
           }
         }
-  
+
         // determining if the task is late or not
         var today = new Date()
         var status = 1
