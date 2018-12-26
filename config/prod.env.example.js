@@ -14,4 +14,5 @@ module.exports = {
   // which are read in your issues descriptions
   GANTT_START_STRING: '"GanttStart: "',
   GANTT_DUE_STRING: '"GanttDue: "',
+  GANTT_DURATION_STRING:  '"GanttDuration: "',
 }
