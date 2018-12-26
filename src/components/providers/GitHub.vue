@@ -84,6 +84,8 @@ export default {
     return {
       ganttStartString: process.env.GANTT_START_STRING,
       ganttDueString: process.env.GANTT_DUE_STRING,
+      ganttDurationString: process.env.GANTT_DURATION_STRING,
+
       // exact state in the app wide Vuex store during initialization
       emptyLinks: null,
       GitHubPaginationLinks: [],
@@ -152,6 +154,7 @@ export default {
         // initializing task start and due date
         var startDate = null
         var dueDate = null
+        var duration = null  
 
         // reading lines from this task body to search for ganttStartString and ganttDueString
         if (task.body != null) {
@@ -168,6 +171,12 @@ export default {
               // this task due date for gantt view is set to the appropriate date
               dueDate = new Date(lines[j].replace(this.ganttDueString, ''))
             }
+
+            // this task body line starts with the ganttDurationString
+            if (!lines[j].indexOf(this.ganttDurationString)) {
+              // this task duration
+              duration = int(lines[j].replace(this.ganttDurationString, ''))
+            }
           }
         }
 
@@ -176,14 +185,19 @@ export default {
           startDate = new Date(task.created_at)
         }
 
-        // if due date is still null we set it to the task due date, or to the day after the task creation date
+        // if due date is still null and the duration is null
+        // we set it to the task due date, or to the day after the task creation date
         if (dueDate == null) {
-          // the task due date is unset
-          dueDate = new Date(task.created_at)
-          // the due date is calculated to the day after the task creation date
-          dueDate.setDate(dueDate.getDate() + 1)
+          if (duration == null) {
+            // the task due date is unset
+            dueDate = new Date(task.created_at)
+            // the due date is calculated to the day after the task creation date
+            dueDate.setDate(dueDate.getDate() + 1)
+          } else {
+            dueDate.setDate(startDate.getDate() + duration)
+          }
         }
-
+  
         // determining if the task is late or not
         var today = new Date()
         var status = 1
